@@ -1,6 +1,13 @@
-﻿namespace UserSaver.DAL.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using UserSaver.DAL.Model;
 
-public class ApplicationDbContext
+namespace UserSaver.DAL.Context;
+
+public class ApplicationDbContext:DbContext
 {
-    
+    public DbSet<User> Users { get; set; }
+    public ApplicationDbContext(DbContextOptions options) : base(options)
+    {
+        Database.EnsureCreated();
+    }
 }

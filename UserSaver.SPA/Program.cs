@@ -1,18 +1,24 @@
+using Microsoft.EntityFrameworkCore;
+using UserSaver.DAL.Context;
+using UserSaverBLL;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+builder.Services.AddTransient<ICrudOperations, CrudOperations>();
+string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddCors(c =>
+{
+    c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyHeader());
+});
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.UseCors(options => options.AllowAnyOrigin());
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
@@ -23,5 +29,4 @@ app.MapControllerRoute(
     pattern: "{controller}/{action=Index}/{id?}");
 
 app.MapFallbackToFile("index.html");
-
 app.Run();
