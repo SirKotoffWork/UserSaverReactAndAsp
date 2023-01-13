@@ -1,6 +1,5 @@
 ﻿import React, {useState} from 'react';
 import {Button, Modal} from "antd";
-import {User} from "oidc-client";
 function EditUser(props) {
 
     const [inputEName, setInputEName] = useState('');

@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { Collapse, Navbar, NavbarBrand, NavbarToggler } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
 

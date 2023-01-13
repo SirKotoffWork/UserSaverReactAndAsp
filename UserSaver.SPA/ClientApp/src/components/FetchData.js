@@ -5,7 +5,7 @@ import useSortableData from "./User/sorting"
 function FetchData(props) {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const [filter,setFilter] = useState('');
     const { items, requestSort} = useSortableData(users);
     
     function getData() {
@@ -44,18 +44,27 @@ function FetchData(props) {
                 <thead>
                 <tr>
                     <th>Id</th>
-                    <th className="w-25" > <input type="text" className="form-control w-75" aria-label="Small"
+                    <th className="w-25" > <input 
+                        onChange={(e)=> setFilter(e.target.value)} type="text" className="form-control w-75" aria-label="Small"
                                 aria-describedby="inputGroup-sizing-sm"/>Name</th>
-                    <th><input type="text" className="form-control w-25" aria-label="Small"
-                               aria-describedby="inputGroup-sizing-sm"/>
-                        Age</th>
+                    <th>Age</th>
                     <th>Car</th>
                     <th>Options</th>
                 </tr>
                 </thead>
                 <tbody>
                 {
-                    items.map(users =>
+                    items.filter((items)=>{
+                        if(filter.toLowerCase() ===''){
+                            return items;
+                        }
+                        else if(Number(filter.toLowerCase())){
+                            return String(items.years).toLowerCase().includes(filter);
+                        }
+                        else if(filter.toLowerCase() !==''){
+                            return items.name.toLowerCase().includes(filter);
+                        }
+                    }).map(users =>
                     <tr id={users.id} key={users.id}>
                         <td>{users.id}</td>
                         <td>{users.name}</td>
