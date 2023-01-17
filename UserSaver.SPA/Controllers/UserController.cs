@@ -20,6 +20,13 @@ public class UserController : ControllerBase
     {
         return _manager.GetAllUser();
     }
+    
+    [HttpPost]
+    [Route("api/User/PartialList/{startIndex}/{endIndex}")]
+    public IEnumerable<User> GetPartialUsers(int startIndex,int endIndex)
+    {
+        return _manager.GetAllUser(startIndex,endIndex);
+    }
 
     
     [HttpDelete]

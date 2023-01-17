@@ -6,4 +6,8 @@ public class User
     public string Name { get; set; }
     public int Years { get; set; }
     public string Car { get; set; }
+    public bool IsAdmin { get; set; }
+    public string Sex { get; set; }
+    public DateTime Date { get; set; }
+    
 }

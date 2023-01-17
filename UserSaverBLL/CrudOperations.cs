@@ -49,6 +49,12 @@ public class CrudOperations : ICrudOperations
     {
         return _db.Users.ToList();
     }
+    public IEnumerable<User> GetAllUser(int startIndex,int endIndex)
+    {
+        var allUsers = _db.Users.ToList();
+        var partialUsers =  allUsers.GetRange(startIndex, endIndex);
+        return partialUsers;
+    }
 
     public bool Delete(int id)
     {
