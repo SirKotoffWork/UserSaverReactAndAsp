@@ -11,9 +11,20 @@ function FetchData(props) {
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('');
     const {items, requestSort} = useSortableData(users);
-    // const [page, setPage] = useState(1);
-    // const [index, setIndex] = useState({startInd: 0, endInd: 10})
+     const [page, setPage] = useState(1);
+     const [index, setIndex] = useState({startInd: 5, endInd: 5})
 
+    function a (){
+        fetch(`https://localhost:44488/user/api/User/PartialList/0/5`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+        }).then(res => res.json())
+            .then(res =>  setUsers(res));
+    }
+    
     function getData() {
         fetch('user')
             .then((response) => response.json())
@@ -23,11 +34,10 @@ function FetchData(props) {
             });
 
     }
-
     useEffect(() => {
-        getData();
+      //  getData();
+        a();
     }, []);
-
     function deleteUser(id) {
         confirm({
             title: 'Are you sure delete this user?',
@@ -47,7 +57,7 @@ function FetchData(props) {
                         }
                     }
                 ).then((res) => {
-                    getData();
+                    onChangePagination();
                 })
             },
             onCancel() {
@@ -55,20 +65,35 @@ function FetchData(props) {
             },
         });
     }
-
-    // function onChangePagination(start,end,e)
-    // {
-    //       fetch(`https://localhost:44488/user/api/User/PartialList/${index.startInd}/${index.endInd}`, {
-    //           method: 'POST',
-    //           headers: {
-    //               'Accept': 'application/json, text/plain, */*',
-    //               'Content-Type': 'application/json'
-    //           },
-    //       }).then(res => res.json())
-    //           .then(res => console.log(res));
-    //      // setPagePagination(e);
-    //       setIndex({startInd:index.startInd+index.endInd, endInd:index.endInd+10});
-    // }
+    
+function getCountUsers(){
+        let userCount=0;
+    fetch('https://localhost:44488/user/api/User/Count', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+    }).then(res => res.json())
+        .then(res => {
+            userCount = res;
+            return Number(userCount);
+        });
+}
+    function onChangePagination(e)
+    {
+          fetch(`https://localhost:44488/user/api/User/PartialList/${index.startInd}/${index.endInd}`, {
+              method: 'POST',
+              headers: {
+                  'Accept': 'application/json, text/plain, */*',
+                  'Content-Type': 'application/json'
+              },
+          }).then(res => res.json())
+              .then(res =>  setUsers(res));
+          setPage(e);
+          console.log(e);
+          setIndex({startInd:5*(e), endInd:5});
+    }
     return (
         <div>
             <div className="text-center">
@@ -81,7 +106,7 @@ function FetchData(props) {
                    aria-label="Small"
                    aria-describedby="inputGroup-sizing-sm"/>
 
-            <Pagination total={50} pageSize={10}/>
+            <Pagination defaultCurrent={1} onChange={(e)=>onChangePagination(e)} total={35} pageSize={5}/>
 
             <table className="table table-striped" aria-labelledby="tableLabel">
                 <thead>

@@ -18,7 +18,6 @@ function EditUser(props) {
     const handleCancel = () => {
         setIsModalEOpen(false);
     };
-    
     function editUser(){
         let newUser = {
             id:props.data.id,       

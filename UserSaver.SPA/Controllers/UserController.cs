@@ -28,6 +28,20 @@ public class UserController : ControllerBase
         return _manager.GetAllUser(startIndex,endIndex);
     }
 
+    [HttpPost]
+    [Route("api/User/list/{startIndex}/{count}/{sortingType}")]
+   public IEnumerable<User> GetAllUserByFilter(int startIndex,int count,string? sortingType) 
+    {
+        return _manager.GetAllUser(startIndex, count,sortingType);
+    }
+    
+
+    [HttpGet]
+    [Route("api/User/Count")]
+    public int GetCountAllUser()
+    {
+        return _manager.GetCountAllUser();
+    }
     
     [HttpDelete]
     [Route("api/User/Delete/{id}")]

@@ -1,4 +1,5 @@
-﻿using UserSaver.DAL.Context;
+﻿using System.ComponentModel;
+using UserSaver.DAL.Context;
 using UserSaver.DAL.Model;
 
 namespace UserSaverBLL;
@@ -49,13 +50,57 @@ public class CrudOperations : ICrudOperations
     {
         return _db.Users.ToList();
     }
-    public IEnumerable<User> GetAllUser(int startIndex,int endIndex)
+    public IEnumerable<User> GetAllUser(int startIndex,int count)
     {
         var allUsers = _db.Users.ToList();
-        var partialUsers =  allUsers.GetRange(startIndex, endIndex);
+        var partialUsers =  allUsers.GetRange(startIndex, count);
         return partialUsers;
     }
+    public IEnumerable<User> GetAllUser(int startIndex,int count,string? sortingType)
+    {
+        var allUsers = _db.Users.ToList();
+        List<User> partialUsers = new();
+        List<User> usersList = new();
 
+        if (sortingType is not "")
+        {
+            switch (sortingType)
+            {
+                case "name": usersList.AddRange(allUsers.OrderBy(a => a.Name));
+                    break;
+                case "years": usersList.AddRange(allUsers.OrderBy(a => a.Years));
+                    break;
+            }
+        }
+        
+        partialUsers.AddRange(usersList);
+        return partialUsers.GetRange(startIndex,count);
+    }
+
+    public IEnumerable<User> GetUsersByFilter(string filterType,string filterValue)
+    {
+        var allUsers = _db.Users.ToList();
+        IEnumerable<User> users = new List<User>();
+        if (!String.IsNullOrEmpty(filterType) && !String.IsNullOrEmpty(filterValue))
+        {
+            if (filterValue == "name")
+            {
+              var filterNameUser  = allUsers.Where(p => p.Name == filterValue);
+              users.Concat(filterNameUser);
+            }
+            if(filterValue == "years")
+            { 
+                var filterYearsUser  = allUsers.Where(p => p.Years == Convert.ToInt32(filterValue));
+                users.Concat(filterYearsUser);
+            }
+        }
+        return users;
+    }
+    
+    public int GetCountAllUser()
+    {
+        return _db.Users.ToList().Count;
+    }
     public bool Delete(int id)
     {
         try
