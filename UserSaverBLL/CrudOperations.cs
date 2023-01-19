@@ -50,68 +50,98 @@ public class CrudOperations : ICrudOperations
     {
         return _db.Users.ToList();
     }
-    public IEnumerable<User> GetAllUser(int startIndex,int count)
+    public IEnumerable<User> GetAllUser(int startIndex, int count)
     {
         var allUsers = _db.Users.ToList();
-        var partialUsers =  allUsers.GetRange(startIndex, count);
+        var partialUsers = allUsers.GetRange(startIndex, count);
         return partialUsers;
     }
-    public IEnumerable<User> GetAllUser(int startIndex,int count,string? sortingType)
+
+    public IEnumerable<User> GetAllUser(int startIndex, int count, string? sortingType, string? filterType,
+        string? filterValue)
     {
-        var allUsers = _db.Users.ToList();
         List<User> partialUsers = new();
         List<User> usersList = new();
+        
+        var allUsers= from s in _db.Users 
+            select s; 
 
         if (sortingType is not "")
         {
             switch (sortingType)
             {
-                case "name": usersList.AddRange(allUsers.OrderBy(a => a.Name));
+                case "name":
+                    allUsers = allUsers.OrderBy(a => a.Name);
                     break;
-                case "years": usersList.AddRange(allUsers.OrderBy(a => a.Years));
+                case "years":
+                    allUsers = allUsers.OrderBy(a => a.Years);
                     break;
             }
+            // partialUsers.AddRange(allUsers);
+            // return partialUsers.GetRange(startIndex, count);
         }
-        
-        partialUsers.AddRange(usersList);
-        return partialUsers.GetRange(startIndex,count);
-    }
 
-    public IEnumerable<User> GetUsersByFilter(string filterType,string filterValue)
-    {
-        var allUsers = _db.Users.ToList();
-        IEnumerable<User> users = new List<User>();
         if (!String.IsNullOrEmpty(filterType) && !String.IsNullOrEmpty(filterValue))
         {
-            if (filterValue == "name")
+            if (filterType == "name")
             {
-              var filterNameUser  = allUsers.Where(p => p.Name == filterValue);
-              users.Concat(filterNameUser);
+                allUsers = allUsers.Where(s => s.Name.ToUpper().Contains(filterValue.ToUpper()));
+                 partialUsers.AddRange(allUsers);
+                 return partialUsers;
             }
-            if(filterValue == "years")
-            { 
-                var filterYearsUser  = allUsers.Where(p => p.Years == Convert.ToInt32(filterValue));
-                users.Concat(filterYearsUser);
+
+            if (filterType == "years")
+            {
+                allUsers = allUsers.Where(s => s.Years.ToString().ToUpper().Contains(filterValue.ToString().ToUpper()));
+                 partialUsers.AddRange(allUsers);
+                 return partialUsers;
             }
+          
         }
-        return users;
+        partialUsers.AddRange(allUsers);
+        return partialUsers.GetRange(startIndex, count);
+        
     }
     
+    // public IEnumerable<User> GetUsersByFilter(string filterType, string filterValue)
+    // {
+    //     var allUsers = _db.Users.ToList();
+    //     IEnumerable<User> users = new List<User>();
+    //     if (!String.IsNullOrEmpty(filterType) && !String.IsNullOrEmpty(filterValue))
+    //     {
+    //         if (filterValue == "name")
+    //         {
+    //             var filterNameUser = allUsers.Where(p => p.Name == filterValue);
+    //             users.Concat(filterNameUser);
+    //         }
+    //
+    //         if (filterValue == "years")
+    //         {
+    //             var filterYearsUser = allUsers.Where(p => p.Years == Convert.ToInt32(filterValue));
+    //             users.Concat(filterYearsUser);
+    //         }
+    //     }
+    //
+    //     return users;
+    // }
+
     public int GetCountAllUser()
     {
         return _db.Users.ToList().Count;
     }
+
     public bool Delete(int id)
     {
         try
         {
             var user = _db.Users.FirstOrDefault(p => p.Id == id);
-                if (user != null)
-                {
-                    _db.Users.Remove(user);
-                    _db.SaveChanges();
-                }
-                return true;
+            if (user != null)
+            {
+                _db.Users.Remove(user);
+                _db.SaveChanges();
+            }
+
+            return true;
         }
         catch (Exception e)
         {
@@ -130,7 +160,7 @@ public class CrudOperations : ICrudOperations
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message); 
+            Console.WriteLine(e.Message);
         }
 
         return new User();

@@ -9,7 +9,7 @@ public interface ICrudOperations
     bool Delete(int id);
     IEnumerable<User> GetAllUser();
     IEnumerable<User> GetAllUser(int startIndex,int endIndex);
-    IEnumerable<User> GetAllUser(int startIndex,int count,string? sortingType);
+    IEnumerable<User> GetAllUser(int startIndex,int count,string? sortingType,string? filterType,string? filterValue);
     int GetCountAllUser();
     User GetUser(int id);
 }

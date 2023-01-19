@@ -20,21 +20,22 @@ public class UserController : ControllerBase
     {
         return _manager.GetAllUser();
     }
-    
+
     [HttpPost]
     [Route("api/User/PartialList/{startIndex}/{endIndex}")]
-    public IEnumerable<User> GetPartialUsers(int startIndex,int endIndex)
+    public IEnumerable<User> GetPartialUsers(int startIndex, int endIndex)
     {
-        return _manager.GetAllUser(startIndex,endIndex);
+        return _manager.GetAllUser(startIndex, endIndex);
     }
 
     [HttpPost]
-    [Route("api/User/list/{startIndex}/{count}/{sortingType}")]
-   public IEnumerable<User> GetAllUserByFilter(int startIndex,int count,string? sortingType) 
+    [Route("api/User/list/{startIndex}/{count}/{sortingType}/filter={filterType}/fv={filterValue}")]
+    public IEnumerable<User> GetAllUserByFilter(int startIndex, int count, string? sortingType, string? filterType,
+        string? filterValue)
     {
-        return _manager.GetAllUser(startIndex, count,sortingType);
+        return _manager.GetAllUser(startIndex, count, sortingType, filterType, filterValue);
     }
-    
+
 
     [HttpGet]
     [Route("api/User/Count")]
@@ -42,7 +43,7 @@ public class UserController : ControllerBase
     {
         return _manager.GetCountAllUser();
     }
-    
+
     [HttpDelete]
     [Route("api/User/Delete/{id}")]
     public bool Delete(int id)
